@@ -11,7 +11,7 @@
 GLfloat vertices[] =
 {
 	//pos			//col	
-	0.f,  0.5f,		1.f, 0.f, 0.f,   
+	0.f,  0.5f,	    1.f, 0.f, 0.f,   
 	-0.5f, -0.5f,	0.f, 1.f, 0.f,
 	0.5f,  -0.5f,	0.f, 0.f, 1.f
 };
@@ -54,7 +54,6 @@ int main()
 
 	gl3wInit();
 
-
 	GLuint program = CompileShader("triangle.vert", "triangle.frag");
 
 	glEnable(GL_DEBUG_OUTPUT);
@@ -67,7 +66,7 @@ int main()
 	glBindVertexArray(VAOs[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (2 * sizeof(float)), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (5 * sizeof(float)), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (5 * sizeof(float)), (void*)(2 * sizeof(float)));

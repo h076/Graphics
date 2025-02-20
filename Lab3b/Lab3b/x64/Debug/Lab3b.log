@@ -1,0 +1,5 @@
+﻿  Lab3b.cpp
+C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Lab3b.cpp')
+  
+  Lab3b.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab3b\x64\Debug\Lab3b.exe
