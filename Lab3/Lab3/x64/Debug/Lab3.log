@@ -1,10 +1,9 @@
 ﻿  Lab3.cpp
-C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
   (compiling source file 'Lab3.cpp')
   
-C:\Users\hazaw\Documents\Graphics\Lab3\Lab3\Lab3.cpp(45,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\hazaw\Documents\Graphics\Lab3\Lab3\Lab3.cpp(46,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\hazaw\Documents\Graphics\Lab3\Lab3\Lab3.cpp(50,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\hazaw\Documents\Graphics\Lab3\Lab3\Lab3.cpp(51,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\hazaw\Documents\Graphics\Lab3\Lab3\Lab3.cpp(54,12): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-  Lab3.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab3\x64\Debug\Lab3.exe
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab3\Lab3\Lab3.cpp(45,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab3\Lab3\Lab3.cpp(46,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab3\Lab3\Lab3.cpp(50,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab3\Lab3\Lab3.cpp(51,33): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Lab3.vcxproj -> C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab3\x64\Debug\Lab3.exe

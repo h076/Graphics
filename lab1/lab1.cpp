@@ -70,7 +70,7 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		static const GLfloat bgd[] = { 1.f, 1.f, 1.f, 1.f };
+		static const GLfloat bgd[] = { 1.f, 0.f, 0.f, 1.f };
 		glClearBufferfv(GL_COLOR, 0, bgd);
 
 		glBindVertexArray(VAOs[0]);

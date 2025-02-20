@@ -1,5 +1,8 @@
-﻿  Lab2.cpp
-C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+﻿  gl3w.c
+  Lab2.cpp
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
   (compiling source file 'Lab2.cpp')
   
-  Lab2.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab2\x64\Debug\Lab2.exe
+  LINK : C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab2\x64\Debug\Lab2.exe not found or not built by the last incremental link; performing full link
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Lab2.vcxproj -> C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab2\x64\Debug\Lab2.exe

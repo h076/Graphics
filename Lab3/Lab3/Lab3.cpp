@@ -34,7 +34,7 @@ float* CreateCircle(int num_segments, float radius)
 {
 	float* rtn = (float*) malloc(sizeof(float) * 3 * 3 * num_segments);
 	float offset = 360.f / num_segments;
-	int angle = 0;
+	float angle = 0;
 	for (int i = 0; i < num_segments; i++) {
 		// v0
 		*(rtn + (i * 9)) = 0;
@@ -79,7 +79,7 @@ int main()
 
 	GLuint program = CompileShader("triangle.vert", "triangle.frag");
 
-	int num_segments = 25;
+	int num_segments = 32;
 	float* verts = CreateCircle(num_segments, 0.5f);
 	//printCircle(verts, num_segments);
 
