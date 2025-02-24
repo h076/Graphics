@@ -1,0 +1,5 @@
+﻿  Lab4b.cpp
+C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Lab4b.cpp')
+  
+  Lab4b.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab4b\x64\Debug\Lab4b.exe

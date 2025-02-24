@@ -91,8 +91,8 @@ void ResizeCallback(GLFWwindow*, int w, int h)
 
 
 //DECLARE POSITION VARIABLES HERE
-glm::vec3 oct_pos = glm::vec3(0.f, 0.f, -5.0f);
-glm::vec3 cam_pos = glm::vec3(0.f, 0.5f, 0.0f);
+glm::vec3 oct_pos = glm::vec3(-1.f, 0.f, -5.0f);
+glm::vec3 cam_pos = glm::vec3(0.f, 0.0f, 0.0f);
 
 int main(int argc, char** argv)
 {
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 
 		//SET UP AND COPY PROJECTION MATRIX HERE
 		glm::mat4 projection = glm::mat4(1.f);
-		projection = glm::perspective(glm::radians(28.f), 640.f / 480.f, 1.f, 10.f);
+		projection = glm::perspective(glm::radians(45.f), 640.f / 480.f, 1.f, 10.f);
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAOs[0]);
