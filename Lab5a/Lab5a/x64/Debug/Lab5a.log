@@ -1,0 +1,5 @@
+﻿  Lab5a.cpp
+C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Lab5a.cpp')
+  
+  Lab5a.vcxproj -> C:\Users\psyhw5\OneDrive - The University of Nottingham\Documents\Graphics\Lab5a\x64\Debug\Lab5a.exe
