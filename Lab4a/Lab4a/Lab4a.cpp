@@ -92,7 +92,7 @@ void ResizeCallback(GLFWwindow*, int w, int h)
 
 //DECLARE POSITION VARIABLES HERE
 glm::vec3 oct_pos = glm::vec3(0.f, 0.f, -5.0f);
-glm::vec3 cam_pos = glm::vec3(0.f, 0.2f, 0.0f);
+glm::vec3 cam_pos = glm::vec3(0.f, 0.5f, 0.0f);
 
 int main(int argc, char** argv)
 {
