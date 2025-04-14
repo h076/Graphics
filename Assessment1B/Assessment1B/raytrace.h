@@ -14,7 +14,8 @@ glm::vec3 Shade(triangle* tri, int depth, glm::vec3 p, glm::vec3 dir)
 
     col = small_ambient * surface_col;
 
-    glm::vec3 norm = glm::normalize(glm::cross(tri->v2.pos - tri->v1.pos, tri->v3.pos - tri->v1.pos));
+    //glm::vec3 norm = glm::normalize(glm::cross(tri->v1.pos - tri->v2.pos, tri->v1.pos - tri->v3.pos));
+    glm::vec3 norm = glm::normalize(tri->v1.nor);
 
     glm::vec3 light_dir = glm::normalize(light_pos - p);
 
@@ -22,7 +23,7 @@ glm::vec3 Shade(triangle* tri, int depth, glm::vec3 p, glm::vec3 dir)
     glm::vec3 shadow_col(0);
 
     glm::vec3 shadow_origin = p + 0.0001f * light_dir;
-
+  
     if(depth < max_recursion_depth)
         trace(shadow_origin, light_dir, t_shadow, shadow_col, depth + 1, Shade);
 
@@ -32,7 +33,7 @@ glm::vec3 Shade(triangle* tri, int depth, glm::vec3 p, glm::vec3 dir)
             idiff = 0.0f;
         col += idiff * surface_col;
     }
-    
+
 
     if (depth < max_recursion_depth && tri->reflect) {
         glm::vec3 reflection_dir = glm::reflect(dir, norm);

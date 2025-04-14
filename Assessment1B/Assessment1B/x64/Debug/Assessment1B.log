@@ -20,13 +20,13 @@ C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\do_not_edit.h(161,87
 C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\do_not_edit.h(162,87): warning C4244: '=': conversion from 'float' to 'char', possible loss of data
   (compiling source file 'Assessment1B.cpp')
   
-C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(148,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(149,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'Assessment1B.cpp')
   
-C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(153,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(154,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'Assessment1B.cpp')
   
-C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(153,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\raytrace.h(154,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'Assessment1B.cpp')
   
 C:\Users\hazaw\Documents\Graphics\Assessment1B\Assessment1B\do_not_edit.h(150,1): warning C4715: 'obj_parse': not all control paths return a value

@@ -1,0 +1,5 @@
+﻿  Lab7.cpp
+C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Lab7.cpp')
+  
+  Lab7.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab7\x64\Debug\Lab7.exe
