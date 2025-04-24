@@ -120,8 +120,8 @@ int main(int argc, char** argv)
 		"mipmaps/grid2x2.bmp",
 		"mipmaps/grid1x1.bmp"
 	};
-	//GLuint texture = setup_mipmaps(files, 11);
-	GLuint texture = setup_texture("grid.bmp");
+	GLuint texture = setup_mipmaps(files, 11);
+	//GLuint texture = setup_texture("casinoFloor.bmp");
 
 
 	glCreateBuffers(NUM_BUFFERS, Buffers);
@@ -168,6 +168,8 @@ int main(int argc, char** argv)
 		glBindVertexArray(VAOs[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
+
+
 
 		glfwSwapBuffers(window);
 

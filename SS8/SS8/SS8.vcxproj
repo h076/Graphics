@@ -141,11 +141,18 @@
     <ClInclude Include="..\..\include\error.h" />
     <ClInclude Include="..\..\include\file.h" />
     <ClInclude Include="..\..\include\shader.h" />
+    <ClInclude Include="..\..\include\stb_image.h" />
+    <ClInclude Include="..\..\include\texture.h" />
     <ClInclude Include="do_not_edit.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="phong.frag" />
     <None Include="phong.vert" />
+    <None Include="texture.frag" />
+    <None Include="texture.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="casinoFloor.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

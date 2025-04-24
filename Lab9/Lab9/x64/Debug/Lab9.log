@@ -1,0 +1,8 @@
+﻿  Lab9.cpp
+C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Lab9.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\include\casteljau.h(44,24): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'Lab9.cpp')
+  
+  Lab9.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab9\x64\Debug\Lab9.exe

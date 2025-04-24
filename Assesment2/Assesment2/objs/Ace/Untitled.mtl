@@ -1,0 +1,22 @@
+# Blender 4.4.1 MTL File: 'None'
+# www.blender.org
+
+newmtl material.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1000.000000
+illum 2
+map_Kd textures/material_diffuse.png
+map_d textures/material_diffuse.png
+
+newmtl material_1.002
+Ns 236.463394
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1000.000000
+d 1.000000
+illum 2
+map_Kd textures/material_1_diffuse.png

@@ -23,7 +23,8 @@ C:\Users\hazaw\Documents\Graphics\SS8\SS8\do_not_edit.h(195,87): warning C4244: 
 C:\Users\hazaw\Documents\Graphics\SS8\SS8\do_not_edit.h(196,87): warning C4244: '=': conversion from 'float' to 'char', possible loss of data
   (compiling source file 'SS8.cpp')
   
-C:\Users\hazaw\Documents\Graphics\SS8\SS8\SS8.cpp(106,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\hazaw\Documents\Graphics\SS8\SS8\SS8.cpp(144,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\hazaw\Documents\Graphics\SS8\SS8\do_not_edit.h(142,1): warning C4715: 'obj_parse': not all control paths return a value
 C:\Users\hazaw\Documents\Graphics\SS8\SS8\do_not_edit.h(243,1): warning C4715: 'savebitmap': not all control paths return a value
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   SS8.vcxproj -> C:\Users\hazaw\Documents\Graphics\SS8\x64\Debug\SS8.exe

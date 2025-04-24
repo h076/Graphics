@@ -38,6 +38,12 @@
     <ClInclude Include="do_not_edit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="phong.frag">
@@ -46,5 +52,16 @@
     <None Include="phong.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="texture.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="texture.frag">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="casinoFloor.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

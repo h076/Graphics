@@ -21,9 +21,33 @@
     <ClCompile Include="..\..\include\GL\gl3w.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="objModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PokerTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Chair.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Deck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pillar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\casteljau.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\error.h">
@@ -32,7 +56,13 @@
     <ClInclude Include="..\..\include\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\shadow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\size.h">
@@ -44,5 +74,69 @@
     <ClInclude Include="..\..\include\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vertices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\tiny_obj_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="objModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PokerTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Chair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trophy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cabinet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Deck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pillar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="phong.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="phong.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="texture.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="texture.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="modelTex.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="modelTex.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="trans.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="trans.frag">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="casinoFloor.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

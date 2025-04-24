@@ -75,10 +75,12 @@ float planeVertices[] = {
 
 
 float transparentVertices[] = {
-	// positions				// RGB				//SPECIFY ALPHA COORDINATE HERE
-	-.5f,  -0.5f,  0.0f,		1.0f,  0.0f, 0.0f,	0.2f,
-	.0f, 0.5f,  0.0f,			1.0f,  0.0f, 0.0f,	0.2f,
-	.5f, -0.5f,  0.0f,			1.0f,  0.0f, 0.0f,	0.2f
+			-0.5f, -0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f,
+			0.5f, -0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f,
+			0.5f,  0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f,
+			-0.5f, -0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f,
+			0.5f,  0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f,
+			-0.5f,  0.5f, 0.0f,		0.659f, 0.8f, 0.843f,	0.2f
 };
 
 
@@ -198,7 +200,7 @@ int main(int argc, char** argv)
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 		glm::mat4 projection = glm::mat4(1.f);
-		projection = glm::perspective(glm::radians(45.f), (float)800 / (float)600, .001f, 10.f);
+		projection = glm::perspective(glm::radians(45.f), (float)800 / (float)600, .1f, 500.f);
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		glm::mat4 model = glm::mat4(1.f);
@@ -238,7 +240,9 @@ int main(int argc, char** argv)
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, it->second);
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			
 		}
 
 		glfwSwapBuffers(window);

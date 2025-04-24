@@ -1,5 +1,7 @@
 #pragma once
 
+#include "file.h"
+
 GLuint CompileShader(const char* vsFilename, const char* fsFilename)
 {
 	int success;

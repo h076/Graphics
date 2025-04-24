@@ -23,18 +23,16 @@ struct SCamera
 	float Yaw;
 	float Pitch;
 
-	const float MovementSpeed = .5f;
+	const float MovementSpeed = 10.f;
 	float MouseSensitivity = 1.f;
-
-
 
 };
 
 
-void InitCamera(SCamera& in)
+void InitCamera(SCamera& in, glm::vec3 pos)
 {
 	in.Front = glm::vec3(0.0f, 0.0f, -1.0f);
-	in.Position = glm::vec3(0.0f, 0.0f, 0.0f);
+	in.Position = pos;
 	in.Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	in.WorldUp = in.Up;
 	in.Right = glm::normalize(glm::cross(in.Front, in.WorldUp));
@@ -45,29 +43,27 @@ void InitCamera(SCamera& in)
 
 float cam_dist = 2.f;
 
-void MoveAndOrientCamera(SCamera& in, glm::vec3 target, float distance, float xoffset, float yoffset)
+void UpdateCameraVectors(SCamera& camera)
 {
-	in.Yaw -= xoffset; //* in.MovementSpeed;
-	in.Pitch -= yoffset; //* in.MovementSpeed;
+	glm::vec3 front;
+	front.x = cos(glm::radians(camera.Yaw)) * cos(glm::radians(camera.Pitch));
+	front.y = sin(glm::radians(camera.Pitch));
+	front.z = sin(glm::radians(camera.Yaw)) * cos(glm::radians(camera.Pitch));
+	camera.Front = glm::normalize(front);
+	camera.Right = glm::normalize(glm::cross(camera.Front, camera.WorldUp));
+	camera.Up = glm::normalize(glm::cross(camera.Right, camera.Front));
+}
 
-	if (in.Pitch > 89.0f)
-		in.Pitch = 89.0f;
-	if (in.Yaw < -89.f)
-		in.Yaw = -89.0f;
+void MoveAndOrientCamera(SCamera& camera, float xoffset, float yoffset)
+{
+	// Adjust yaw and pitch
+	camera.Yaw += xoffset * camera.MouseSensitivity;
+	camera.Pitch += yoffset * camera.MouseSensitivity;
 
-	in.Position = glm::vec3(cos(glm::radians(in.Yaw)) * cos(glm::radians(in.Pitch)),
-		sin(glm::radians(in.Pitch)),
-		sin(glm::radians(in.Yaw)) * cos(glm::radians(in.Pitch)));
+	// Constrain pitch
+	if (camera.Pitch > 89.0f)  camera.Pitch = 89.0f;
+	if (camera.Pitch < -89.0f) camera.Pitch = -89.0f;
 
-	in.Position *= distance;
-
-	// get vector from camera position to target vector
-	in.Front = glm::normalize(target - in.Position);
-
-	// get direction to move camera on x axis around the side of sphere
-	in.Right = glm::normalize(glm::cross(in.Front, in.WorldUp));
-
-	// get direction to move camera on y axis towards top pole
-	in.Up = glm::normalize(glm::cross(in.Right, in.Front));
-
+	// Recompute direction vectors
+	UpdateCameraVectors(camera);
 }
