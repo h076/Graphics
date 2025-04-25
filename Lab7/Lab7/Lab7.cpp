@@ -113,47 +113,33 @@ void drawFloorAndCubes(unsigned int shaderProgram)
 
 }
 
-void processKeyboard(GLFWwindow* window)
+void processKeyboard(GLFWwindow * window, SCamera & camera, float deltaTime)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	float velocity = camera.MovementSpeed * deltaTime;
+
+	// Movement: W/S forward/back, A/D strafe
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.Position += camera.Front * velocity;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.Position -= camera.Front * velocity;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.Position -= camera.Right * velocity;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.Position += camera.Right * velocity;
+
+	// Orientation: arrow keys to yaw/pitch
+	float xoff = 0.f, yoff = 0.f;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) xoff = -0.5f;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) xoff = 0.5f;
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) yoff = 0.5f;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) yoff = -0.5f;
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		lightDirection = Camera.Front;
 		lightPos = Camera.Position;
 	}
-
-	float x_offset = 0.f;
-	float y_offset = 0.f;
-	bool cam_changed = false;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		x_offset = 1.0f;
-		cam_changed = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		x_offset = -1.0f;
-		cam_changed = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		y_offset = 1.0f;
-		cam_changed = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		y_offset = -1.0f;
-		cam_changed = true;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-		cam_dist -= 0.1f;
-		cam_changed = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		cam_dist += 0.1f;
-		cam_changed = true;
-	}
-
-	if (cam_changed)
-		MoveAndOrientCamera(Camera, glm::vec3(0.f, 0.f, 0.f), cam_dist, x_offset, y_offset);
+	if (xoff != 0.f || yoff != 0.f)
+		MoveAndOrientCamera(camera, xoff, yoff);
 }
 
 void SizeCallback(GLFWwindow* window, int w, int h)
@@ -177,9 +163,9 @@ int main(int argc, char** argv)
 
 	GLuint program = CompileShader("phong.vert", "phong.frag");
 
-	InitCamera(Camera);
+	InitCamera(Camera, glm::vec3(5.f, 5.f, 5.f));
 	cam_dist = 5.f;
-	MoveAndOrientCamera(Camera, glm::vec3(0, 0, 0), cam_dist, 0.f, 0.f);
+	//MoveAndOrientCamera(Camera, glm::vec3(0, 0, 0), cam_dist, 0.f, 0.f);
 
 
 	glCreateBuffers(NUM_BUFFERS, Buffers);
@@ -196,9 +182,13 @@ int main(int argc, char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 
-
+	float lastFrame = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
+		float currentFrame = glfwGetTime();
+		float deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		static const GLfloat bgd[] = { .8f, .8f, .8f, 1.f };
 		glClearBufferfv(GL_COLOR, 0, bgd);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -224,7 +214,7 @@ int main(int argc, char** argv)
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
-		processKeyboard(window);
+		processKeyboard(window, Camera, deltaTime);
 	}
 
 	glfwDestroyWindow(window);

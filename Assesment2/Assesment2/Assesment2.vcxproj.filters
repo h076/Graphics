@@ -107,6 +107,9 @@
     <ClInclude Include="Pillar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="phong.frag">
@@ -131,6 +134,9 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="trans.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="spot.frag">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

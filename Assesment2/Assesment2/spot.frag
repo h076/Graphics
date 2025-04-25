@@ -1,4 +1,4 @@
-# version 450 core
+#version 450 core
 
 layout (location = 0) out vec4 fColour;
 
@@ -6,7 +6,7 @@ in vec3 col;
 in vec3 nor;
 in vec3 FragPosWorldSpace;
 
-uniform vec3 spotDirection;
+uniform vec3 lightDirection;
 uniform vec3 lightColour;
 uniform vec3 camPos;
 uniform vec3 lightPos;
@@ -18,11 +18,11 @@ void main()
 
 	// Calculate diffuse
 	vec3 Nnor = normalize(nor);
-	vec3 Nto_light = normalize(spotDirection - FragPosWorldSpace);
+	vec3 Nto_light = normalize(lightPos - FragPosWorldSpace);
 	float diffuse = max(dot(Nnor, Nto_light), 0.0);
 
 	// Calculate specular
-	vec3 NFromLight = -NToLight;
+	vec3 Nfrom_light = -Nto_light;
 	vec3 NrefLight = reflect(Nfrom_light, Nnor);
 	vec3 camDirection = camPos - FragPosWorldSpace;
 	vec3 NcamDirection = normalize(camDirection);
@@ -34,9 +34,10 @@ void main()
 
 	// Spot light cone factor
 	float phi = cos(radians(cutOffAngle)); // cut off angle
-	vec3 NSpotDir = normalize(spotDirection);
-	float theta = dot(NFromLight, NSpotDir);
+	vec3 NSpotDir = normalize(lightDirection);
+	float theta = dot(Nfrom_light, NSpotDir);
 
+	float phong;
 	if (theta > phi)
     {
         // Inside the spotlight cone: add ambient, diffuse, specular then apply attenuation.
@@ -48,5 +49,5 @@ void main()
         phong = ambient * attenuation;
     }
 
-	return phong;
+	fColour = vec4(phong * col * lightColour, 1.0);
 }

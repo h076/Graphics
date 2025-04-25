@@ -2,4 +2,6 @@
 C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
   (compiling source file 'Lab7.cpp')
   
+C:\Users\hazaw\Documents\Graphics\Lab7\Lab7\Lab7.cpp(185,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Lab7\Lab7\Lab7.cpp(188,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Lab7.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab7\x64\Debug\Lab7.exe

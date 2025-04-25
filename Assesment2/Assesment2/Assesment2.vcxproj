@@ -162,6 +162,7 @@
     <ClInclude Include="objModel.h" />
     <ClInclude Include="Pillar.h" />
     <ClInclude Include="PokerTable.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Trophy.h" />
     <ClInclude Include="vertices.h" />
   </ItemGroup>
@@ -170,6 +171,7 @@
     <None Include="modelTex.vert" />
     <None Include="phong.frag" />
     <None Include="phong.vert" />
+    <None Include="spot.frag" />
     <None Include="texture.frag" />
     <None Include="texture.vert" />
     <None Include="trans.frag" />

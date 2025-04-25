@@ -12,19 +12,20 @@ class Floor {
 public:
 	Floor(GLuint buffer, GLuint vao) {
 		VAO = vao;
-		program = CompileShader("texture.vert", "texture.frag");
 		texture = setup_texture("casinoCarpet.bmp");
 
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 	}
 
-	void drawFloor(SCamera Camera) {
+	void drawFloor(SCamera Camera, GLuint program) {
 		glDisable(GL_CULL_FACE);
 		glUseProgram(program);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -44,9 +45,9 @@ public:
 		for (int x = -2; x <= 2; x++) {
 			for (int y = -2; y <= 2; y++) {
 				glm::mat4 model = glm::mat4(1.f);
-				model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+				//model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 				model = glm::scale(model, glm::vec3(10.f, 10.f, 10.f));
-				model = glm::translate(model, glm::vec3((float)x*2, (float)y*2, 0));
+				model = glm::translate(model, glm::vec3((float)x*2, 0, (float)y * 2));
 				glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 				glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -59,20 +60,15 @@ public:
 	}
 
 private:
-	GLuint program;
 	GLuint texture;
 	GLuint VAO;
 
-	float vertices[30] = {
-		//t1				
-		//pos					//tex
-		-1.f, 1.f, 0.f,			0.f, 1.f,//tl
-		1.f, 1.f, 0.f,			1.f, 1.f,//tr
-		1.f, -1.f, 0.f,			1.f, 0.f,//br
-		//t2					
-		//pos					//tex
-		-1.f, 1.f, 0.f,		0.f, 1.f,//tl
-		1.f,  -1.f, 0.f,		1.f, 0.f,//br
-		-1.f,  -1.f, 0.f,		0.f, 0.f//bl
+	float vertices[48] = {
+		-1.f,  0.f, 1.f,  	0.f, 1.f, 0.f,	0.f, 1.f,
+		1.f,  0.f, 1.f,  	0.f, 1.f, 0.f,	1.f, 1.f,
+		1.f,  0.f,  -1.f,  	0.f, 1.f, 0.f,	1.f, 0.f,
+		-1.f,  0.f,  1.f,  	0.f, 1.f, 0.f,	0.f, 1.f,
+		1.f,  0.f,  -1.f,  	0.f, 1.f, 0.f,	1.f, 0.f,
+		-1.f,  0.f, -1.f, 	0.f, 1.f, 0.f,	0.f, 0.f
 	};
 };

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "camera.h"
+#include "SpotLight.h"
 #include "error.h"
 #include "shader.h"
 #include "PokerTable.h"
@@ -26,11 +27,10 @@ GLuint VAOs[NUM_VAOS];
 #define WIDTH 1920
 #define HEIGHT 1080
 
-glm::vec3 lightDirection(20.f, 20.f, 0.61f);
-glm::vec3 lightPos(-50.f, 15.f, -50.f);
-
 SCamera Camera;
 glm::vec3 cameraTarget(0.f, 0.f, 0.f);
+
+SpotLight spotLight;
 
 void SizeCallback(GLFWwindow* window, int w, int h)
 {
@@ -86,10 +86,8 @@ int main(int argc, char** argv) {
     GLuint texProgram = CompileShader("modelTex.vert", "modelTex.frag");
 
     InitCamera(Camera, glm::vec3(5.f, 10.f, 5.f));
-    Camera.Yaw = -89.f;
-    Camera.Pitch = 89.f;
-    //MoveAndOrientCamera(Camera, glm::vec3(0, 0, 0), cam_dist, 0.f, 0.f, 0.f);
-
+    InitSpotLight(spotLight, glm::vec3(0.f, 30.f, 0.f), glm::vec3(0.f, -1.f, 0.f), glm::vec3(4.f, 4.f, 4.f), 30.f);
+    
     glCreateBuffers(NUM_BUFFERS, Buffers);
     glGenVertexArrays(NUM_VAOS, VAOs);
 
@@ -127,35 +125,28 @@ int main(int argc, char** argv) {
         glClear(GL_DEPTH_BUFFER_BIT);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        glUseProgram(program);
-        glBindVertexArray(VAOs[0]);
+        glUseProgram(texProgram);
 
-        glUniform3f(glGetUniformLocation(program, "lightDirection"), lightDirection.x, lightDirection.y, lightDirection.z);
-        glUniform3f(glGetUniformLocation(program, "lightColour"), 20.f, 20.f, 20.f);
-        glUniform3f(glGetUniformLocation(program, "camPos"), Camera.Position.x, Camera.Position.y, Camera.Position.z);
-        glUniform3f(glGetUniformLocation(program, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(glGetUniformLocation(texProgram, "lightDirection"), spotLight.Dir.x, spotLight.Dir.y, spotLight.Dir.z);
+        glUniform3f(glGetUniformLocation(texProgram, "lightColour"), spotLight.Col.r, spotLight.Col.g, spotLight.Col.b);
+        glUniform3f(glGetUniformLocation(texProgram, "camPos"), Camera.Position.x, Camera.Position.y, Camera.Position.z);
+        glUniform3f(glGetUniformLocation(texProgram, "lightPos"), spotLight.Pos.x, spotLight.Pos.y, spotLight.Pos.z);
+        glUniform1f(glGetUniformLocation(texProgram, "cutOffAngle"), spotLight.CutOffAngle);
 
-        glm::mat4 view = glm::mat4(1.f);
-        view = glm::lookAt(Camera.Position, Camera.Position + Camera.Front, Camera.Up);
-        glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-
-        glm::mat4 projection = glm::mat4(1.f);
-        projection = glm::perspective(glm::radians(60.f), (float)WIDTH / (float)HEIGHT, .1f, 500.f);
-        glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-        glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, glm::vec3(0.f, 0.01f, 0.f));
-        model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
-        glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-
-        floor.drawFloor(Camera);
+        floor.drawFloor(Camera, texProgram);
         table.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
         chair.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
         pillar.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
         deck.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
 
         deck.deal(texProgram, Camera.Position, Camera.Front, Camera.Up, true);
+
+        glUseProgram(program);
+
+        glUniform3f(glGetUniformLocation(program, "lightDirection"), spotLight.Dir.x, spotLight.Dir.y, spotLight.Dir.z);
+        glUniform3f(glGetUniformLocation(program, "lightColour"), spotLight.Col.r, spotLight.Col.g, spotLight.Col.b);
+        glUniform3f(glGetUniformLocation(program, "camPos"), Camera.Position.x, Camera.Position.y, Camera.Position.z);
+        glUniform3f(glGetUniformLocation(program, "lightPos"), spotLight.Pos.x, spotLight.Pos.y, spotLight.Pos.z);
         
         cabinet.draw(Camera, program);
 

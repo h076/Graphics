@@ -1,2 +1,29 @@
-﻿  Pillar.cpp
+﻿  Assesment2.cpp
+C:\Users\hazaw\Documents\Graphics\include\file.h(17,11): warning C4267: 'initializing': conversion from 'size_t' to 'long', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(91,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(143,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(169,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(170,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(175,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(176,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(208,40): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+  (compiling source file 'Assesment2.cpp')
+  
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Assesment2.cpp(116,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Assesment2.cpp(119,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Assesment2.vcxproj -> C:\Users\hazaw\Documents\Graphics\Assesment2\x64\Debug\Assesment2.exe
