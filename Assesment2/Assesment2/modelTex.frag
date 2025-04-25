@@ -1,12 +1,14 @@
-#version 450 core
+﻿#version 450 core
 
 layout (location = 0) out vec4 fColour;
 
 in vec2 TexCoord;
 in vec3 nor;
 in vec3 FragPosWorldSpace;
+in vec4 FragPosProjectedLightSpace;
 
 uniform sampler2D diffuseMap;
+uniform sampler2D shadowMap;
 
 uniform vec3 lightDirection;
 uniform vec3 lightColour;
@@ -15,6 +17,8 @@ uniform vec3 lightPos;
 uniform float cutOffAngle;
 
 float CalculateSpotIllumination();
+
+float shadowOnFragment(vec4 FragPos);
 
 void main() {
     float phong = CalculateSpotIllumination();
@@ -48,12 +52,14 @@ float CalculateSpotIllumination()
 	vec3 NSpotDir = normalize(lightDirection);
 	float theta = dot(Nfrom_light, NSpotDir);
 
+    float shadow = shadowOnFragment(FragPosProjectedLightSpace);
+
     // 6. Compute the final phong term based on whether the fragment is inside the spot cone.
     float phong;
     if (theta > phi)
     {
         // Inside the spotlight cone: add ambient, diffuse, specular then apply attenuation.
-        phong = (ambient + diffuse + specular) * attenuation;
+        phong = (ambient + ((1.f-shadow)*(diffuse + specular))) * attenuation;
     }
     else
     {
@@ -62,4 +68,26 @@ float CalculateSpotIllumination()
     }
     
     return phong;
+}
+
+float shadowOnFragment(vec4 FragPos)
+{
+    vec3 ndc = FragPos.xyz / FragPos.w;
+    vec3 ss = (ndc+1)*0.5;
+
+    float fragDepth = ss.z;
+
+    float litDepth = texture(shadowMap, ss.xy).r;
+
+    vec3 Nnor = normalize(nor);
+    vec3 Ntolight = normalize(-lightDirection);
+    float bias = max(0.05 * (1.0 - dot(Nnor, Ntolight)), 0.005);
+
+    float shadow = 0.f;
+    shadow = fragDepth > (litDepth+bias) ? 1.0 : 0.0;
+
+    if (fragDepth > 1)
+        shadow = 0.f;
+
+    return shadow;
 }

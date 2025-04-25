@@ -11,5 +11,7 @@ C:\Users\hazaw\Documents\Graphics\include\shadow.h(55,69): warning C4244: '=': c
 C:\Users\hazaw\Documents\Graphics\include\shadow.h(56,69): warning C4244: '=': conversion from 'float' to 'char', possible loss of data
   (compiling source file 'Lab8.cpp')
   
+C:\Users\hazaw\Documents\Graphics\Lab8\Lab8\Lab8.cpp(229,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\hazaw\Documents\Graphics\Lab8\Lab8\Lab8.cpp(232,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\hazaw\Documents\Graphics\include\bitmap.h(34,1): warning C4715: 'savebitmap': not all control paths return a value
   Lab8.vcxproj -> C:\Users\hazaw\Documents\Graphics\Lab8\x64\Debug\Lab8.exe

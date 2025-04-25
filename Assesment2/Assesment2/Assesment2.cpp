@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "camera.h"
+#include "shadow.h"
 #include "SpotLight.h"
 #include "error.h"
 #include "shader.h"
@@ -26,6 +27,8 @@ GLuint VAOs[NUM_VAOS];
 
 #define WIDTH 1920
 #define HEIGHT 1080
+#define SH_MAP_WIDTH 2048
+#define SH_MAP_HEIGHT 2048
 
 SCamera Camera;
 glm::vec3 cameraTarget(0.f, 0.f, 0.f);
@@ -62,6 +65,55 @@ void processKeyboard(GLFWwindow* window, SCamera& camera, float deltaTime)
         MoveAndOrientCamera(camera, xoff, yoff);
 }
 
+void generateDepthMap(unsigned int shadowShader, ShadowStruct shadow, 
+    glm::mat4 projectedLightSpaceMatrix, SCamera Camera, Floor& floor, PokerTable& table, Chair& chair) {
+
+    glViewport(0, 0, SH_MAP_WIDTH, SH_MAP_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadow.FBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(shadowShader);
+    glUniformMatrix4fv(glGetUniformLocation(shadowShader, "projectedLightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(projectedLightSpaceMatrix));
+    
+    table.draw(shadowShader, Camera.Position, Camera.Front, Camera.Up);
+    chair.draw(shadowShader, Camera.Position, Camera.Front, Camera.Up);
+    floor.drawFloor(Camera, shadowShader);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+void renderWithShadow(unsigned int renderShader, ShadowStruct shadow,
+    glm::mat4 projectedLightSpaceMatrix, SCamera Camera, Floor& floor, PokerTable& table, Chair& chair) {
+
+    glViewport(0, 0, WIDTH, HEIGHT);
+
+    // clear colour buffer
+    static const GLfloat bgd[]{ 0.8f, 0.8f, 0.8f, 1.f };
+    glClearBufferfv(GL_COLOR, 0, bgd);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glUseProgram(renderShader);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, shadow.Texture);
+
+    // 2) pass that unit index into the sampler2D in your shader:
+    GLint loc = glGetUniformLocation(renderShader, "shadowMap");
+    glUseProgram(renderShader);
+    glUniform1i(loc, 1);
+
+    // set uniforms for all models using textures
+    glUniformMatrix4fv(glGetUniformLocation(renderShader, "projectedLightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(projectedLightSpaceMatrix));
+    glUniform3f(glGetUniformLocation(renderShader, "lightDirection"), spotLight.Dir.x, spotLight.Dir.y, spotLight.Dir.z);
+    glUniform3f(glGetUniformLocation(renderShader, "lightColour"), spotLight.Col.r, spotLight.Col.g, spotLight.Col.b);
+    glUniform3f(glGetUniformLocation(renderShader, "camPos"), Camera.Position.x, Camera.Position.y, Camera.Position.z);
+    glUniform3f(glGetUniformLocation(renderShader, "lightPos"), spotLight.Pos.x, spotLight.Pos.y, spotLight.Pos.z);
+    glUniform1f(glGetUniformLocation(renderShader, "cutOffAngle"), spotLight.CutOffAngle);
+
+    table.draw(renderShader, Camera.Position, Camera.Front, Camera.Up);
+    chair.draw(renderShader, Camera.Position, Camera.Front, Camera.Up);
+    floor.drawFloor(Camera, renderShader);
+}
+
+
 int main(int argc, char** argv) {
     glfwInit();
 
@@ -82,8 +134,11 @@ int main(int argc, char** argv) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    ShadowStruct shadow = setup_shadowmap(SH_MAP_WIDTH, SH_MAP_HEIGHT);
+
     GLuint program = CompileShader("phong.vert", "phong.frag");
     GLuint texProgram = CompileShader("modelTex.vert", "modelTex.frag");
+    GLuint shadowProgram = CompileShader("shadow.vert", "shadow.frag");
 
     InitCamera(Camera, glm::vec3(5.f, 10.f, 5.f));
     InitSpotLight(spotLight, glm::vec3(0.f, 30.f, 0.f), glm::vec3(0.f, -1.f, 0.f), glm::vec3(4.f, 4.f, 4.f), 30.f);
@@ -120,25 +175,41 @@ int main(int argc, char** argv) {
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        static const GLfloat bgd[] = { .8f, .8f, .8f, 1.f };
-        glClearBufferfv(GL_COLOR, 0, bgd);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glm::vec3 lightDir = normalize(spotLight.Dir);
+        glm::vec3 worldUp = glm::vec3(0, 1, 0);
+        glm::vec3 lightUp;
+
+        // if lightDir is nearly parallel to worldUp, pick a different axis
+        if (fabs(glm::dot(lightDir, worldUp)) > 0.99f) {
+            lightUp = glm::vec3(1, 0, 0);
+        }
+        else {
+            lightUp = worldUp;
+        }
+
+        // set up the projected light matrix
+        // projection does not require perspective as all light rays 
+        // are parrallel using directional light.
+        float near_plane = 1.0f, far_plane = 70.5f;
+        // near is distance of nearest plane to camera, far is furthest
+        glm::mat4 lightProjection = glm::ortho(-10.f, 10.f, -10.f, 10.f, near_plane, far_plane);
+        glm::mat4 lightView = glm::lookAt(spotLight.Pos, spotLight.Pos + spotLight.Dir, lightUp);
+        glm::mat4 projectedLightSpaceMatrix = lightProjection * lightView;
+
+        generateDepthMap(shadowProgram, shadow, projectedLightSpaceMatrix, Camera, floor, table, chair);
+        renderWithShadow(texProgram, shadow, projectedLightSpaceMatrix, Camera, floor, table, chair);
 
         glUseProgram(texProgram);
 
+        // set uniforms for all models using textures
         glUniform3f(glGetUniformLocation(texProgram, "lightDirection"), spotLight.Dir.x, spotLight.Dir.y, spotLight.Dir.z);
         glUniform3f(glGetUniformLocation(texProgram, "lightColour"), spotLight.Col.r, spotLight.Col.g, spotLight.Col.b);
         glUniform3f(glGetUniformLocation(texProgram, "camPos"), Camera.Position.x, Camera.Position.y, Camera.Position.z);
         glUniform3f(glGetUniformLocation(texProgram, "lightPos"), spotLight.Pos.x, spotLight.Pos.y, spotLight.Pos.z);
         glUniform1f(glGetUniformLocation(texProgram, "cutOffAngle"), spotLight.CutOffAngle);
 
-        floor.drawFloor(Camera, texProgram);
-        table.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
-        chair.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
-        pillar.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
+        // set uniforms in deck for card shadow
         deck.draw(texProgram, Camera.Position, Camera.Front, Camera.Up);
-
         deck.deal(texProgram, Camera.Position, Camera.Front, Camera.Up, true);
 
         glUseProgram(program);

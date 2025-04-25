@@ -171,6 +171,8 @@
     <None Include="modelTex.vert" />
     <None Include="phong.frag" />
     <None Include="phong.vert" />
+    <None Include="shadow.frag" />
+    <None Include="shadow.vert" />
     <None Include="spot.frag" />
     <None Include="texture.frag" />
     <None Include="texture.vert" />
