@@ -144,6 +144,7 @@ GLuint ObjModel::loadTextureFromFile(const std::string& filename, const std::str
     stbi_set_flip_vertically_on_load(true);
     int w, h, n;
     unsigned char* data = stbi_load(fullPath.c_str(), &w, &h, &n, 0);
+    //unsigned char* data = stbi_load(fullPath.c_str(), &w, &h, &n, 3);
     if (!data) {
         std::cerr << "ERROR: stbi_load returned NULL for " << filename << "\n";
         return 0;
@@ -171,6 +172,13 @@ GLuint ObjModel::loadTextureFromFile(const std::string& filename, const std::str
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    if (n == 1) {
+        GLint swizzleMask[] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+        glTexParameteriv(GL_TEXTURE_2D,
+            GL_TEXTURE_SWIZZLE_RGBA,
+            swizzleMask);
+    }
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFmt, w, h, 0, dataFmt, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);

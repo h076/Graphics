@@ -132,7 +132,7 @@ void Deck::draw(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFron
 	}
 }
 
-void Deck::deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, const glm::vec3& camUp, bool step) {
+bool Deck::deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, const glm::vec3& camUp, bool step) {
 	// first card of first hand
 	point p = curve1[step1];
 	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
@@ -215,12 +215,12 @@ void Deck::deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFron
 	}
 
 	// flip flop cards
-	if(step && stepFlop3 > num_evals * 0.8)
-		flipCard(shader, camPos, camFront, camUp, *(flopCurve1.end()-1), stepFlip1, flipped1);
-	if(step && stepFlip1 == 180)
-		flipCard(shader, camPos, camFront, camUp, *(flopCurve2.end() - 1), stepFlip2, flipped2);
-	if (step && stepFlip2 == 180)
-		flipCard(shader, camPos, camFront, camUp, *(flopCurve3.end() - 1), stepFlip3, flipped3);
+	if(stepFlop3 > num_evals * 0.8)
+		flipCard(shader, camPos, camFront, camUp, *(flopCurve1.end()-1), stepFlip1, flipped1, step);
+	if(stepFlip1 == 180)
+		flipCard(shader, camPos, camFront, camUp, *(flopCurve2.end() - 1), stepFlip2, flipped2, step);
+	if (stepFlip2 == 180)
+		flipCard(shader, camPos, camFront, camUp, *(flopCurve3.end() - 1), stepFlip3, flipped3, step);
 
 	// second burn card
 	p = burnCurve[stepBurn2];
@@ -239,8 +239,8 @@ void Deck::deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFron
 			stepTurn++;
 	}
 
-	if(step && stepTurn == num_evals)
-		flipCard(shader, camPos, camFront, camUp, *(turnCurve.end() - 1), stepFlip4, flipped4);
+	if(stepTurn == num_evals)
+		flipCard(shader, camPos, camFront, camUp, *(turnCurve.end() - 1), stepFlip4, flipped4, step);
 
 	// third burn card
 	p = burnCurve[stepBurn3];
@@ -259,14 +259,169 @@ void Deck::deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFron
 			stepRiver++;
 	}
 
-	if (step && stepRiver == num_evals)
-		flipCard(shader, camPos, camFront, camUp, *(riverCurve.end() - 1), stepFlip5, flipped5);
+	if (stepRiver == num_evals)
+		flipCard(shader, camPos, camFront, camUp, *(riverCurve.end() - 1), stepFlip5, flipped5, step);
 
+	if (stepFlip5 == 180)
+		return true;
+	return false;
+}
+
+bool Deck::in(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, const glm::vec3& camUp, bool step) {
+	point p;
+
+	// unflip cards
+	if(flipped5)
+		unFlipCard(shader, camPos, camFront, camUp, *(riverCurve.end() - 1), stepFlip5, flipped5, step);
+
+	if(stepFlip5 == 0 && flipped4)
+		unFlipCard(shader, camPos, camFront, camUp, *(turnCurve.end() - 1), stepFlip4, flipped4, step);
+	else {
+		p = turnCurve[stepTurn];
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 180.f);
+	}
+
+	if(stepFlip4 == 0 && flipped3)
+		unFlipCard(shader, camPos, camFront, camUp, *(flopCurve3.end() - 1), stepFlip3, flipped3, step);
+	else {
+		p = flopCurve3[stepFlop3];
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 180.f);
+	}
+
+	if (stepFlip3 == 0 && flipped2)
+		unFlipCard(shader, camPos, camFront, camUp, *(flopCurve2.end() - 1), stepFlip2, flipped2, step);
+	else {
+		p = flopCurve2[stepFlop2];
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 180.f);
+	}
+
+	if (stepFlip2 == 0 && flipped1)
+		unFlipCard(shader, camPos, camFront, camUp, *(flopCurve1.end() - 1), stepFlip1, flipped1, step);
+	else {
+		p = flopCurve1[stepFlop1];
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 180.f);
+	}
+
+	// return community cards
+	p = flopCurve1[stepFlop1];
+	if (!flipped1)
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (stepFlop1 != 0)
+			stepFlop1--;
+	}
+
+	p = flopCurve2[stepFlop2];
+	if (!flipped2)
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped2) {
+		if (stepFlop2 != 0)
+			stepFlop2--;
+	}
+
+	p = flopCurve3[stepFlop3];
+	if (!flipped3)
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped3) {
+		if (stepFlop3 != 0)
+			stepFlop3--;
+	}
+
+	p = turnCurve[stepTurn];
+	if (!flipped4)
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped4) {
+		if (stepTurn != 0)
+			stepTurn--;
+	}
+
+	p = riverCurve[stepRiver];
+	if (!flipped5)
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped5) {
+		if (stepRiver != 0)
+			stepRiver--;
+	}
+
+	// return burns
+	p = burnCurve[stepBurn1];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (stepBurn1 != 0)
+			stepBurn1--;
+	}
+
+	p = burnCurve[stepBurn2];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (stepBurn2 != 0)
+			stepBurn2--;
+	}
+
+	p = burnCurve[stepBurn3];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (stepBurn3 != 0)
+			stepBurn3--;
+	}
+
+	// second card of third hand
+	p = curve32[step32];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step32 != 0)
+			step32--;
+	}
+
+	// second card of second hand
+	p = curve22[step22];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step22 != 0)
+			step22--;
+	}
+
+	// second card of first hand
+	p = curve12[step12];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step12 != 0)
+			step12--;
+	}
+
+	// first card of third hand
+	p = curve3[step3];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step3 != 0)
+			step3--;
+	}
+
+	// first card of second hand
+	p = curve2[step2];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step2 != 0)
+			step2--;
+	}
+
+	// first card of first hand
+	p = curve1[step1];
+	card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), 0.f);
+	if (step && !flipped1) {
+		if (step1 != 0)
+			step1--;
+	}
+
+	if (step1 == 0)
+		return false;
+	return true;
 }
 
 void Deck::flipCard(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront,
-	const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped) {
-	flipped = true;
+	const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped, bool step) {
+	if (step)
+		flipped = true;
 
 	if (flipStep == 0) {
 		ctrlFlip[0] = cardPos;
@@ -278,9 +433,33 @@ void Deck::flipCard(GLuint shader, const glm::vec3& camPos, const glm::vec3& cam
 	float rotation = static_cast<float>(flipStep);
 	if (flipStep != 180) {
 		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), rotation);
-		flipStep++;
+		if (step)
+			flipStep++;
 	}
 	else {
 		card->draw(shader, camPos, camFront, camUp, glm::vec3(cardPos.x, cardPos.y, cardPos.z), rotation);
+	}
+}
+
+void Deck::unFlipCard(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront,
+	const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped, bool step) {
+
+	if (flipStep == 180) {
+		ctrlFlip[3] = cardPos;
+		ctrlFlip[0] = cardPos;
+		flipCurve = EvaluateBezierCurve(ctrlFlip, 180);
+	}
+
+	point p = flipCurve[flipStep];
+	float rotation = static_cast<float>(flipStep);
+	if (flipStep != 0) {
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(p.x, p.y, p.z), rotation);
+		if (step)
+			flipStep--;
+	}
+	else {
+		card->draw(shader, camPos, camFront, camUp, glm::vec3(cardPos.x, cardPos.y, cardPos.z), rotation);
+		if(step)
+			flipped = false;
 	}
 }

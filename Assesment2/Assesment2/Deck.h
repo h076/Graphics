@@ -12,12 +12,18 @@ class Deck {
 		void draw(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, 
 				const glm::vec3& camUp);
 
-		void deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, 
+		bool deal(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, 
+				const glm::vec3& camUp, bool step);
+
+		bool in(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront,
 				const glm::vec3& camUp, bool step);
 
 	private:
 		void flipCard(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront, 
-				const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped);
+				const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped, bool step);
+
+		void unFlipCard(GLuint shader, const glm::vec3& camPos, const glm::vec3& camFront,
+				const glm::vec3& camUp, const point& cardPos, int& flipStep, bool& flipped, bool step);
 
 		int num_evals;
 		Card* card;

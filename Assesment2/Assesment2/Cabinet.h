@@ -12,7 +12,7 @@ class Cabinet {
 			VAO = vao;
 			trophy = new Trophy(vao, vbo, &vertices, 36);
 
-			glassProgram = CompileShader("trans.vert", "trans.frag");
+			glassProgram = CompileShader("multiLight.vert", "multiLight.frag");
 			glassVAO = gvao;
 			glassVBO = gvbo;
 
@@ -22,14 +22,23 @@ class Cabinet {
 			glBufferData(GL_ARRAY_BUFFER, sizeof(glassVertices), glassVertices, GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
-			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
+			glEnableVertexAttribArray(3);
 
 			glBindVertexArray(0);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 
-		void draw(SCamera camera, GLuint shader) {
+		void drawSet(SCamera camera, GLuint shader) {
+			drawSolid(camera, shader, 10.f, 30.f, 2, false);
+			drawSolid(camera, shader, 0.f, 30.f, 20, false);
+			drawSolid(camera, shader, -10.f, 30.f, 200, true);
+			drawTrans(camera, shader, 10.f, 30.f);
+			drawTrans(camera, shader, 0.f, 30.f);
+			drawTrans(camera, shader, -10.f, 30.f);
+		}
+
+		void drawSolid(SCamera camera, GLuint shader, float globalX, float globalZ, int tLayers, bool curve) {
 			glUseProgram(shader);
 			glBindVertexArray(VAO);
 
@@ -42,25 +51,104 @@ class Cabinet {
 			glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 			glm::mat4 model = glm::mat4(1.f);
-			model = glm::translate(model, glm::vec3(18.f, 3.5f, 18.f));
+			model = glm::translate(model, glm::vec3(globalX, 3.5f, globalZ));
 			model = glm::scale(model, glm::vec3(5.f, 7.f, 5.f));
-			
+
 			glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
+			glUniform1i(glGetUniformLocation(shader, "useTexture"), false);
+
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-			
-			trophy->draw(camera, shader, glm::vec3(18.f, 7.f, 18.f));
+
+			trophy->draw(camera, shader, glm::vec3(globalX, 7.f, globalZ), tLayers, 35.f, 2.0f, curve);
+		}
+
+		void drawTrans(SCamera camera, GLuint shader, float globalX, float globalZ) {
+			glBindVertexArray(VAO);
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			// draw glass
 			std::vector<glm::vec3> positions;
-			positions.push_back(glm::vec3(18.f, 9.5f, 20.5f));
-			positions.push_back(glm::vec3(18.f, 9.5f, 15.5f));
-			positions.push_back(glm::vec3(15.5f, 9.5f, 18.f));
-			positions.push_back(glm::vec3(20.5f, 9.5f, 18.f));
-			positions.push_back(glm::vec3(18.f, 12.f, 18.f));
+			positions.push_back(glm::vec3(globalX, 9.5f, globalZ + 2.5f));
+			positions.push_back(glm::vec3(globalX, 9.5f, globalZ - 2.5f));
+			positions.push_back(glm::vec3(globalX - 2.5f, 9.5f, globalZ));
+			positions.push_back(glm::vec3(globalX + 2.5f, 9.5f, globalZ));
+			positions.push_back(glm::vec3(globalX, 12.f, globalZ));
+
+			std::map<float, glm::vec3> sorted_positions;
+			for (int i = 0; i < positions.size(); i++) {
+				glm::vec3 v = camera.Position - positions[i];
+				float l = glm::length(v);
+				sorted_positions[l] = positions[i];
+			}
+
+
+			glDisable(GL_CULL_FACE);
+			glUseProgram(glassProgram);
+			glBindVertexArray(glassVAO);
+
+			glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+			glUniformMatrix4fv(glGetUniformLocation(glassProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1920 / (float)1080, 0.1f, 500.0f);
+			glUniformMatrix4fv(glGetUniformLocation(glassProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+			glm::mat4 model;
+			for (auto it = sorted_positions.rbegin(); it != sorted_positions.rend(); it++) {
+				model = glm::mat4(1.f);
+				model = glm::translate(model, it->second);
+				if (it->second.y == 12.f)
+					model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+				else if (it->second.z == globalZ)
+					model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.f, 1.f, 0.f));
+				model = glm::scale(model, glm::vec3(5.f, 5.f, 5.f));
+				glUniformMatrix4fv(glGetUniformLocation(glassProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+			}
+
+			glEnable(GL_CULL_FACE);
+
+			// unbind
+			glBindVertexArray(0);
+		}
+
+		void draw(SCamera camera, GLuint shader, float globalX, float globalZ, int tLayers, bool curve) {
+			glUseProgram(shader);
+			glBindVertexArray(VAO);
+
+			glDisable(GL_CULL_FACE);
+
+			glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+			glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1920 / (float)1080, 0.1f, 500.0f);
+			glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+			glm::mat4 model = glm::mat4(1.f);
+			model = glm::translate(model, glm::vec3(globalX, 3.5f, globalZ));
+			model = glm::scale(model, glm::vec3(5.f, 7.f, 5.f));
+			
+			glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+			glUniform1i(glGetUniformLocation(shader, "useTexture"), false);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			
+			trophy->draw(camera, shader, glm::vec3(globalX, 7.f, globalZ), tLayers, 35.f, 2.0f, curve);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			// draw glass
+			std::vector<glm::vec3> positions;
+			positions.push_back(glm::vec3(globalX, 9.5f, globalZ + 2.5f));
+			positions.push_back(glm::vec3(globalX, 9.5f, globalZ - 2.5f));
+			positions.push_back(glm::vec3(globalX - 2.5f, 9.5f, globalZ));
+			positions.push_back(glm::vec3(globalX + 2.5f, 9.5f, globalZ));
+			positions.push_back(glm::vec3(globalX, 12.f, globalZ));
 
 			std::map<float, glm::vec3> sorted_positions;
 			for (int i = 0; i < positions.size(); i++) {
@@ -86,7 +174,7 @@ class Cabinet {
 				model = glm::translate(model, it->second);
 				if (it->second.y == 12.f)
 					model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-				else if(it->second.z == 18.f)
+				else if(it->second.z == globalZ)
 					model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.f, 1.f, 0.f));
 				model = glm::scale(model, glm::vec3(5.f, 5.f, 5.f));
 				glUniformMatrix4fv(glGetUniformLocation(glassProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));

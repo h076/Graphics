@@ -19,6 +19,8 @@ void Card::draw(unsigned int shader, const glm::vec3& camPos,
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1920 / (float)1080, 0.1f, 500.0f);
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
+    glUniform1i(glGetUniformLocation(shader, "useTexture"), true);
+
     for (auto const& sm : submeshes) {
         GLuint tex = (sm.materialID >= 0 && sm.materialID < (int)textures.size())
             ? textures[sm.materialID]

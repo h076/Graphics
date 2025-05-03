@@ -39,6 +39,15 @@
     <ClCompile Include="Pillar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ceiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\bitmap.h">
@@ -110,6 +119,21 @@
     <ClInclude Include="SpotLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="positionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ceiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="phong.frag">
@@ -143,6 +167,15 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="shadow.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="multiLight.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="multiLight.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="multiShadow.vert">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

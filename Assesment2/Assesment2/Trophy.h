@@ -23,36 +23,96 @@ class Trophy {
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices->size(), vertices->data(), GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
-			glEnableVertexAttribArray(2);
 
 			glBindVertexArray(0);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 
-		void draw(SCamera camera, GLuint shader, glm::vec3 globalTranslation) {
-			//glUseProgram(shader);
-			//glBindVertexArray(VAO);
+		void draw(SCamera camera, GLuint shader, glm::vec3 globalTranslation, int layers, float height, float baseRadius, bool curve) {
+			if (curve)
+				drawCurve(camera, shader, globalTranslation, layers, height, baseRadius);
+			else
+				dynamicDraw(camera, shader, globalTranslation, layers, height, baseRadius);
+		}
 
+private:
+
+		void drawCurve(SCamera camera, GLuint shader, glm::vec3 globalTranslation, int layers, float height, float baseRadius) {
 			glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
 			glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1920 / (float)1080, 0.1f, 500.0f);
 			glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-			// Draw all layers for the trophy base
-			//glm::vec3 globalTranslation = glm::vec3(0.f, 8.f, 0.f);
-			glm::mat4 model;
+			glUniform1i(glGetUniformLocation(shader, "useTexture"), false);
 
-			for (int l = 0; l < 10; l++) {
+			// Draw all layers for the trophy base
+			glm::mat4 model;
+			float yScale = height / static_cast<float>(layers);
+			float step = baseRadius / static_cast<float>(layers);
+
+			int rl = layers;
+			// draw first half of layers
+			for (int l = 0; l < layers; l++) {
+				rl--;
 
 				model = glm::mat4(1.f);
-				model = glm::translate(model, globalTranslation); // move to global position
+				model = glm::translate(model, globalTranslation);
 
-				model = glm::scale(model, glm::vec3(1.2f - (0.075f * l), 1.2f, 1.2f - (0.075f * l)));
-				model = glm::translate(model, glm::vec3(0.f, (cylinderHeight / 2 * l) + (cylinderHeight / 2), 0.f));
+				//model = glm::translate(model, glm::vec3(0.f, (l * cylinderHeight) + (cylinderHeight), 0.f));
+				if (l < layers / 2)
+					model = glm::scale(model, glm::vec3(baseRadius - (step * l), yScale, baseRadius - (step * l)));
+				else
+					model = glm::scale(model, glm::vec3(baseRadius - (step * rl), yScale, baseRadius - (step * rl)));
+
+				model = glm::translate(model, glm::vec3(0.f, (l * cylinderHeight) + (cylinderHeight / 2), 0.f));
+
+				glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+				// draw side strip
+				glDrawArrays(GL_TRIANGLE_STRIP, vertextStartIdx, sideVertexCount);
+
+				// draw top cap
+				glDrawArrays(GL_TRIANGLE_FAN, vertextStartIdx + startIdxTopCap, topCapVertexCount);
+			}
+
+			// draw sphere
+			model = glm::mat4(1.f);
+			model = glm::translate(model, globalTranslation); // move to global position
+			model = glm::translate(model, glm::vec3(0.f, yScale * (layers * cylinderHeight) + (cylinderHeight / 2), 0.f));
+			model = glm::scale(model, glm::vec3(baseRadius + 0.1f, 1, baseRadius + 0.1f));
+			glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+			glDisable(GL_CULL_FACE);
+			glDrawArrays(GL_TRIANGLES, vertextStartIdx + sphereStartIdx, sphereVertexCount);
+			glEnable(GL_CULL_FACE);
+		}
+
+		void dynamicDraw(SCamera camera, GLuint shader, glm::vec3 globalTranslation, int layers, float height, float baseRadius) {
+			glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+			glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)1920 / (float)1080, 0.1f, 500.0f);
+			glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+			glUniform1i(glGetUniformLocation(shader, "useTexture"), false);
+
+			// Draw all layers for the trophy base
+			glm::mat4 model;
+			float yScale = height / static_cast<float>(layers);
+			float step = baseRadius / static_cast<float>(layers);
+			for (int l = 0; l < layers; l++) {
+				model = glm::mat4(1.f);
+				model = glm::translate(model, globalTranslation);
+
+				//model = glm::translate(model, glm::vec3(0.f, (l * cylinderHeight) + (cylinderHeight), 0.f));
+				model = glm::scale(model, glm::vec3(baseRadius - (step * l), yScale, baseRadius - (step * l)));
+				model = glm::translate(model, glm::vec3(0.f, (l * cylinderHeight) + (cylinderHeight / 2), 0.f));
+
 				glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 				// draw side strip
@@ -66,22 +126,18 @@ class Trophy {
 			model = glm::mat4(1.f);
 			model = glm::translate(model, globalTranslation); // move to global position
 			model = glm::scale(model, glm::vec3(0.8f, 0.8f, 0.8f));
-			model = glm::translate(model, glm::vec3(0.f, 2.8f, 0.f));
+			model = glm::translate(model, glm::vec3(0.f, 4.8f, 0.f));
 			glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 			glDisable(GL_CULL_FACE);
 			glDrawArrays(GL_TRIANGLES, vertextStartIdx + sphereStartIdx, sphereVertexCount);
 			glEnable(GL_CULL_FACE);
-
-			// unbind
-			//glBindVertexArray(0);
 		}
 
-	private:
 		void generateVerts() {
-			const float height = 0.3f;      // cylinder height
+			const float height = 0.1f;      // cylinder height
 			const float radius = 1.0f;      // cylinder radius
-			const int slices = 36;       // how many segments around
+			const int slices = 72;			// how many segments around
 
 			cylinderHeight = height;
 

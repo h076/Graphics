@@ -31,11 +31,6 @@ public:
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 
-		glm::mat4 model = glm::mat4(1.f);
-		model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-		model = glm::scale(model, glm::vec3(10.f, 10.f, 10.f));
-		glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
 		glm::mat4 view = glm::lookAt(Camera.Position, Camera.Position + Camera.Front, Camera.Up);
 		glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
@@ -43,11 +38,10 @@ public:
 		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		for (int x = -2; x <= 2; x++) {
-			for (int y = -2; y <= 2; y++) {
+			for (int z = -2; z <= 2; z++) {
 				glm::mat4 model = glm::mat4(1.f);
-				//model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 				model = glm::scale(model, glm::vec3(10.f, 10.f, 10.f));
-				model = glm::translate(model, glm::vec3((float)x*2, 0, (float)y * 2));
+				model = glm::translate(model, glm::vec3((float)x * 2, 0, (float)z * 2));
 				glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 				glDrawArrays(GL_TRIANGLES, 0, 6);
