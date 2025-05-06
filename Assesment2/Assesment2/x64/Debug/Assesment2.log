@@ -35,5 +35,4 @@ C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Trophy.h(264,40): warnin
 C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Assesment2.cpp(362,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\hazaw\Documents\Graphics\Assesment2\Assesment2\Assesment2.cpp(365,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\hazaw\Documents\Graphics\include\bitmap.h(34,1): warning C4715: 'savebitmap': not all control paths return a value
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Assesment2.vcxproj -> C:\Users\hazaw\Documents\Graphics\Assesment2\x64\Debug\Assesment2.exe

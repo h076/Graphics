@@ -371,6 +371,7 @@ int main(int argc, char** argv) {
 
         generateMultiDepthMap(shadowProgram, shadowMaps, projectedLightMatrices, Camera, 
             floor, table, chair, pillar, cabinet, wall, deck, ceiling, light);
+        saveShadowMapToBitmap(shadowMaps[4].Texture, SH_MAP_WIDTH, SH_MAP_HEIGHT);
         renderWithMultiShadows(multiLightProgram, shadowMaps, projectedLightMatrices, Camera, 
             floor, table, chair, pillar, cabinet, wall, deck, ceiling, light);
 
